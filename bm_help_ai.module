@@ -1,0 +1,20 @@
+<?php
+
+declare(strict_types=1);
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function bm_help_ai_help(string $route_name, RouteMatchInterface $route_match): string|null {
+  if ($route_name === 'help.page.bm_help_ai') {
+    return '<p>' . t('Provides an aggregated admin help surface with optional AI relevance scaffolding at <em>/admin/help/ai</em>. The module lists help topics, module overviews, and a placeholder AI section without calling external services.') . '</p>';
+  }
+
+  if ($route_name === 'bm_help_ai.help_ai') {
+    return '<p>' . t('This page aggregates Drupal help sources, highlights module overviews, and prepares a space for future AI-assisted relevance while keeping canonical help authoritative.') . '</p>';
+  }
+
+  return null;
+}

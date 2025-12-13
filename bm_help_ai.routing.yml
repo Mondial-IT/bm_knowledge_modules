@@ -1,0 +1,7 @@
+bm_help_ai.help_ai:
+  path: '/admin/help/ai'
+  defaults:
+    _form: '\Drupal\bm_help_ai\Form\HelpAiForm'
+    _title: 'Help AI'
+  requirements:
+    _permission: 'access administration pages'

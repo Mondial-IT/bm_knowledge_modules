@@ -1,0 +1,5 @@
+bm_help_ai.help_ai:
+  title: 'AI Help'
+  description: 'Aggregated help topics with placeholder AI assistance.'
+  route_name: bm_help_ai.help_ai
+  parent: help.main

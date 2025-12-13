@@ -1,0 +1,19 @@
+services:
+  bm_help_ai.help_aggregation:
+    class: Drupal\bm_help_ai\Service\HelpAggregationService
+    arguments:
+      - '@plugin.manager.help_topic'
+      - '@module_handler'
+      - '@current_route_match'
+      - '@renderer'
+
+  bm_help_ai.help_context:
+    class: Drupal\bm_help_ai\Service\HelpContextService
+    arguments:
+      - '@current_route_match'
+      - '@current_user'
+      - '@module_handler'
+      - '@user.permissions'
+
+  bm_help_ai.help_ai_relevance:
+    class: Drupal\bm_help_ai\Service\HelpAiRelevanceService
