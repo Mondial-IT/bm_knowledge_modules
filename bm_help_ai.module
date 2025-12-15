@@ -18,3 +18,13 @@ function bm_help_ai_help(string $route_name, RouteMatchInterface $route_match): 
 
   return null;
 }
+
+/**
+ * Implements hook_help_topics_info_alter().
+ */
+function bm_help_ai_help_topics_info_alter(array &$info): void {
+  // Flag bm_help_ai.overview as suitable for the module overview section.
+  if (isset($info['bm_help_ai.overview'])) {
+    $info['bm_help_ai.overview']['bm_help_ai_overview'] = TRUE;
+  }
+}

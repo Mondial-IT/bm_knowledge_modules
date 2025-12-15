@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drupal\Tests\bm_help_ai\Unit;
 
 use Drupal\bm_help_ai\Service\HelpAggregationService;
+use Drupal\bm_help_ai\Service\HelpClassificationService;
 use Drupal\Core\Extension\Extension;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Link;
@@ -53,11 +54,15 @@ class HelpAggregationServiceTest extends UnitTestCase {
     $module_handler->getModuleList()->willReturn(['example' => $example_extension]);
     $module_handler->invoke('example', 'help', ['help.page.example', $route_match->reveal()])->willReturn('<p>Module overview help.</p>');
 
+    $classification = $this->prophesize(HelpClassificationService::class);
+    $classification->attachClassification(\Prophecy\Argument::any())->willReturnArgument(0);
+
     $service = new HelpAggregationService(
       $help_topic_manager->reveal(),
       $module_handler->reveal(),
       $route_match->reveal(),
       $renderer->reveal(),
+      $classification->reveal(),
     );
 
     $topics = $service->getHelpTopics();

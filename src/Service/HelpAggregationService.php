@@ -22,6 +22,7 @@ class HelpAggregationService {
     protected ModuleHandlerInterface $moduleHandler,
     protected RouteMatchInterface $routeMatch,
     protected RendererInterface $renderer,
+    protected HelpClassificationService $classificationService,
   ) {}
 
   /**
@@ -43,10 +44,12 @@ class HelpAggregationService {
         'tags' => [],
         'link' => Url::fromRoute('help.help_topic', ['id' => $id]),
         'is_overview' => (bool) ($definition['bm_help_ai_overview'] ?? FALSE),
+        'help_topic_type' => 'help_topic',
+        'help_topic_status' => 'current',
       ];
     }
 
-    return $items;
+    return $this->classificationService->attachClassification($items);
   }
 
   /**
@@ -71,10 +74,11 @@ class HelpAggregationService {
         'module' => $module,
         'description' => $this->normalizeDescription($help),
         'tags' => [],
+        'help_topic_type' => '.module',
       ];
     }
 
-    return $items;
+    return $this->classificationService->attachClassification($items);
   }
 
   /**

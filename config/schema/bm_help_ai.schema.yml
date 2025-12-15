@@ -1,0 +1,29 @@
+bm_help_ai.classification:
+  type: mapping
+  label: 'BM Help AI classification settings'
+  mapping:
+    items:
+      type: mapping
+      label: 'Classification items keyed by help id'
+      mapping:
+        '*':
+          type: mapping
+          label: 'Help item classification'
+          mapping:
+            terms:
+              type: sequence
+              label: 'Term IDs'
+              sequence:
+                type: integer
+            primary_term:
+              type: integer
+              label: 'Primary term'
+            manual_order:
+              type: integer
+              label: 'Manual order'
+            help_topic_type:
+              type: string
+              label: 'Help item type'
+            help_topic_status:
+              type: string
+              label: 'Help item status'

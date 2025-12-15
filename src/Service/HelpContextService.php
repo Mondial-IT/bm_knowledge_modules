@@ -7,6 +7,7 @@ namespace Drupal\bm_help_ai\Service;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Session\AccountProxyInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\user\PermissionHandlerInterface;
 
 /**
@@ -19,6 +20,7 @@ class HelpContextService {
     protected AccountProxyInterface $currentUser,
     protected ModuleHandlerInterface $moduleHandler,
     protected PermissionHandlerInterface $permissionHandler,
+    protected RequestStack $requestStack,
   ) {}
 
   /**
@@ -34,6 +36,7 @@ class HelpContextService {
       'user_roles' => $this->getUserRoles(),
       'user_permissions' => $this->getUserPermissions(),
       'enabled_modules' => $this->getEnabledModules(),
+      'selected_term_id' => $this->getSelectedTermId(),
     ];
   }
 
@@ -80,6 +83,19 @@ class HelpContextService {
    */
   public function getEnabledModules(): array {
     return array_keys($this->moduleHandler->getModuleList());
+  }
+
+  /**
+   * Returns selected taxonomy term id from query (?tid=).
+   */
+  public function getSelectedTermId(): ?int {
+    $request = $this->requestStack->getCurrentRequest();
+    if (!$request) {
+      return NULL;
+    }
+
+    $tid = $request->query->getInt('tid', 0);
+    return $tid > 0 ? $tid : NULL;
   }
 
 }
