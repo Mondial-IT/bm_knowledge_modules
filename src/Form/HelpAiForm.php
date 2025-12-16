@@ -157,9 +157,26 @@ class HelpAiForm extends FormBase {
       '#title' => $this->t('Situation-specific help'),
       '#description' => $this->t('Ordered using contextual signals such as route, roles, and enabled modules.'),
       '#open' => TRUE,
-      'items' => [
-        '#theme' => 'item_list',
-        '#items' => $this->buildHelpList($situational_help),
+      '#attributes' => ['class' => ['bm-help-ai-table-wrapper']],
+      'table' => [
+        '#type' => 'table',
+        '#attributes' => [
+          'class' => ['bm-help-ai-table', 'bm-help-ai-table-situational'],
+          'data-bm-help-ai-table' => 'situational',
+          'data-has-actions' => 'true',
+        ],
+        '#header' => [
+          $this->t('Title'),
+          $this->t('Description'),
+          $this->t('Source'),
+          $this->t('Module'),
+          $this->t('Type'),
+          $this->t('Status'),
+          $this->t('File'),
+          $this->t('Actions'),
+        ],
+        '#rows' => $this->buildTableRows($situational_help, TRUE),
+        '#empty' => $this->t('No situational help available.'),
       ],
     ];
 
@@ -301,7 +318,7 @@ class HelpAiForm extends FormBase {
       ];
       if ($with_actions) {
         $row['data'][] = [
-          'data' => $this->buildEditAction($item),
+          'data' => $this->buildActions($item),
         ];
       }
       $rows[] = $row;
@@ -310,24 +327,42 @@ class HelpAiForm extends FormBase {
   }
 
   /**
-   * Builds the edit action link for a row.
+   * Builds the actions (display/edit) for a row.
    */
-  protected function buildEditAction(array $item): array {
+  protected function buildActions(array $item): array {
     $term_id = $item['terms'][0] ?? NULL;
     if (!$term_id) {
       return ['#markup' => $this->t('—')];
     }
 
-    $url = Url::fromRoute('entity.taxonomy_term.edit_form', ['taxonomy_term' => $term_id]);
+    $display_url = Url::fromRoute('entity.taxonomy_term.canonical', ['taxonomy_term' => $term_id]);
+    $edit_url = Url::fromRoute('entity.taxonomy_term.edit_form', ['taxonomy_term' => $term_id]);
+
     return [
-      '#type' => 'link',
-      '#title' => $this->t('Edit'),
-      '#url' => $url,
-      '#attributes' => [
-        'class' => ['bm-help-ai-edit', 'use-ajax'],
-        'data-dialog-type' => 'dialog',
-        'data-dialog-renderer' => 'off_canvas',
-        'data-dialog-options' => json_encode(['position' => 'end', 'width' => '40%']),
+      '#type' => 'container',
+      '#attributes' => ['class' => ['bm-help-ai-actions']],
+      'display' => [
+        '#type' => 'link',
+        '#title' => $this->t('Display'),
+        '#url' => $display_url,
+        '#attributes' => [
+          'class' => ['bm-help-ai-display', 'use-ajax'],
+          'data-dialog-type' => 'dialog',
+          'data-dialog-renderer' => 'off_canvas',
+          'data-dialog-options' => json_encode(['position' => 'end', 'width' => '40%']),
+        ],
+      ],
+      'spacer' => ['#markup' => ' '],
+      'edit' => [
+        '#type' => 'link',
+        '#title' => $this->t('Edit'),
+        '#url' => $edit_url,
+        '#attributes' => [
+          'class' => ['bm-help-ai-edit', 'use-ajax'],
+          'data-dialog-type' => 'dialog',
+          'data-dialog-renderer' => 'off_canvas',
+          'data-dialog-options' => json_encode(['position' => 'end', 'width' => '40%']),
+        ],
       ],
     ];
   }

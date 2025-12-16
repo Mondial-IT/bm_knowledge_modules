@@ -15,3 +15,9 @@
 .bm-help-ai-actions {
   text-align: right;
 }
+
+.bm-help-ai-actions .bm-help-ai-display,
+.bm-help-ai-actions .bm-help-ai-edit {
+  display: inline-block;
+  margin-left: 0.25rem;
+}

@@ -49,3 +49,10 @@ Alter the discovery mechanism, to:
 ## step 4.4 enable editing of the help item related taxonomy term.
 Add an edit button to the table row entries. On click open the related taxonomy term (ajax retrieved) edit form in a right sidebar pop-in.
 ✅ Actions column links to the related taxonomy term edit form (off-canvas).
+
+## step 4.5 add a display button, to display taxonomy term in sidebar dialog
+Expand the actions column, with a `display` button. Use the drupal theme styling (select box). On click ajax load and open the sidebar dialog to show the term view form.
+✅ Added Display link in Actions; opens term canonical in off-canvas sidebar alongside Edit.
+
+## step 5.0 make `Situation-specific help` conform the tables of `topics` and `Modules overview`
+* datatables, columns, edit and read. And the same taxonomy update and create (if not already present)
