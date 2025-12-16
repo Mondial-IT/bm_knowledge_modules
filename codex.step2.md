@@ -2,11 +2,14 @@
 
 Architecture plan for enhancing context/UX by introducing a taxonomy-driven hierarchy and sidebar navigation for help discovery. Applies only to `bm_help_ai`.
 
+- Execute the steps in this document,
+- after a step is completed: update this document `##` topic with a `✅` mark.
+
 ## Objectives
-- Organize help into browsable hierarchies (topics + module help).
-- Provide term-based filtering for unrelated help items.
-- Preserve existing aggregation services and AI stubs; add classification as an orthogonal layer.
-- Keep deterministic fallbacks when taxonomy is missing or incomplete.
+- ✅ Organize help into browsable hierarchies (topics + module help).
+- ✅ Provide term-based filtering for unrelated help items.
+- ✅ Preserve existing aggregation services and AI stubs; add classification as an orthogonal layer.
+- ✅ Keep deterministic fallbacks when taxonomy is missing or incomplete.
 
 ## Scope & Constraints
 - No external services; Drupal 11 + PHP 8.3 only.
@@ -14,11 +17,11 @@ Architecture plan for enhancing context/UX by introducing a taxonomy-driven hier
 - Must respect existing access (`access administration pages`) and future role-based filtering.
 - Avoid JS; server-rendered tree + filters.
 
-## Data Model
-- **Vocabulary**: `bm_help_ai_help_topics` (machine name) used for hierarchy.
+## Data Model ✅
+- ✅ **Vocabulary**: `bm_help_ai_help_topics` (machine name) used for hierarchy.
   - Supports nested terms; terms may be reused as tags and in hierarchy.
   - Optional term fields: `display_name` (string), `description` (formatted), `weight`.
-- **Help topic metadata import**:
+- ✅ **Help topic metadata import**:
   - Source: help topic Twig front matter (`label`, `top_level`, `related`) and file mtime.
   - Vocabulary for metadata storage: `help_topics_metadata` with term fields:
     - `help_topic_timestamp` (datetime of the help file on import)
@@ -29,7 +32,7 @@ Architecture plan for enhancing context/UX by introducing a taxonomy-driven hier
     - `help_topic_status` (list: `current` = file present, `not found`, `updated` = file present and newer than stored)
   - Extraction: parse Twig front matter for help topics; parse module `.module` help metadata; map wiki imports to `help_topic_type: wiki`.
   - Status evaluation compares stored `help_topic_timestamp` to file mtime; mark as `updated` when file is newer.
-- **Classification mapping** (config entity):
+- ✅ **Classification mapping** (config entity):
   - ID: help item ID (`help_topic` plugin ID or `hook_help.{module}`).
   - Fields: `terms` (term reference list), `primary_term` (single term), `manual_order` (int).
   - Source metadata preserved (e.g., `source`, `module`) for display/audit.
@@ -37,25 +40,25 @@ Architecture plan for enhancing context/UX by introducing a taxonomy-driven hier
   - Help topic definitions may expose `bm_help_ai_terms` to seed mappings on cron/install, but manual config overrides.
   - Hook-based help has no metadata; relies on manual mapping.
 
-## Services & Responsibilities
-- `HelpAggregationService`
+## Services & Responsibilities ✅
+- ✅ `HelpAggregationService`
   - Extend normalized items to include `terms` (term IDs) and `primary_term` when available.
   - Remains source-of-truth for help data; uses `HelpClassificationService` to attach taxonomy.
-- `HelpClassificationService` (new)
+- ✅ `HelpClassificationService` (new)
   - Loads mappings for a list of help IDs; resolves term entities.
   - Provides helper: `getTree()` returning a term tree shaped for sidebar (nested arrays with labels/links/counts).
   - Caches per language + role-aware contexts (cache contexts: `languages:language_interface`, `user.roles`).
-- `HelpContextService`
+- ✅ `HelpContextService`
   - Optionally expose selected term from request (e.g., `?tid=123`) to inform filtering.
 - `HelpAiRelevanceService`
   - Accepts pre-filtered items; may later use taxonomy as a signal. Default behavior unchanged.
 
 ## UI/UX
-- **Sidebar navigation**
+- ✅ **Sidebar navigation**
   - Left column details element or vertical navigation rendering term tree.
   - Links to `/admin/help/ai?tid={term_id}`; server filters lists by selected term (including descendants).
   - Shows counts per term (items in subtree) for quick scanning.
-- **Main content**
+- ✅ **Main content**
   - Topics/Module Overviews/Situation-specific sections respect active term filter:
     - If `tid` present, show items tagged with term or descendant; otherwise show all.
     - Clear “filter badge” + “Reset filter” link to base route.
@@ -64,7 +67,7 @@ Architecture plan for enhancing context/UX by introducing a taxonomy-driven hier
   - If no items for selected term, display guidance to select another term or clear filter.
   - If taxonomy not configured, render current UI unchanged with a notice “No taxonomy configured; showing all help.”
 
-## Routing & Parameters
+## Routing & Parameters ✅
 - Keep route `/admin/help/ai`.
 - Accept optional query `tid` (integer). Validation: term exists in vocabulary; otherwise ignore.
 
@@ -80,10 +83,10 @@ Architecture plan for enhancing context/UX by introducing a taxonomy-driven hier
   - Taxonomy term CRUD in the vocabulary.
   - Config entity CRUD for classifications.
   - Module enable/disable (affects available help).
-- Keep list rendering pageless; keep item descriptions trimmed as today.
+  - Keep list rendering pageless; keep item descriptions trimmed as today.
 
 ## Testing Strategy (incremental)
-- Unit:
+- ✅ Unit:
   - Classification mapping merges into normalized items.
   - Term-tree builder returns expected nesting/counts.
   - Filter helper returns items for term + descendants.
@@ -92,7 +95,7 @@ Architecture plan for enhancing context/UX by introducing a taxonomy-driven hier
   - Query param `tid` filters rendered form output.
 
 ## Detailed Implementation Steps
-- **Vocabulary & fields**
+- ✅ **Vocabulary & fields**
   - Create vocabularies `bm_help_ai_help_topics` and `help_topics_metadata`.
   - Add fields (storage + form/view displays) on `help_topics_metadata`:
     - `help_topic_timestamp`: datetime.
@@ -101,7 +104,7 @@ Architecture plan for enhancing context/UX by introducing a taxonomy-driven hier
     - `help_topic_top_level`: boolean.
     - `help_topic_related`: text or entity reference depending on chosen relation model.
     - `help_topic_status`: list (allowed values: `current`, `not found`, `updated`).
-- **Metadata import pipeline**
+- ✅ **Metadata import pipeline**
   - Command/service reads:
     - Help topic Twig front matter (YAML section) for `label`, `top_level`, `related`.
     - File mtime for `help_topic_timestamp`.
@@ -115,14 +118,14 @@ Architecture plan for enhancing context/UX by introducing a taxonomy-driven hier
       - Else -> `current`.
     - Preserve `help_topic_related` relationships; if using entity references, resolve related IDs to terms.
   - Expose Drush command (future) `bm-help-ai:import-metadata` to run the pipeline; callable service for UI button reuse.
-- **Classification service**
+- ✅ **Classification service**
   - Add `HelpClassificationService` to load mappings and attach term IDs to normalized help items.
   - Provide `getTree()` using taxonomy storage to assemble hierarchy with counts and URLs (with `tid` query).
   - Add helper to filter items by `tid` including descendant terms.
-- **Aggregation updates**
+- ✅ **Aggregation updates**
   - `HelpAggregationService` asks `HelpClassificationService` for term data and merges `terms`/`primary_term` into each item.
   - Include optional `help_topic_type` and `help_topic_status` when available for display badges in the form.
-- **Form UX**
+- ✅ **Form UX**
   - Sidebar navigation uses `getTree()`; links apply `tid` query parameter.
   - Main sections filter by selected `tid`; show reset link and empty states.
   - AI placeholder text notes taxonomy-based filtering.

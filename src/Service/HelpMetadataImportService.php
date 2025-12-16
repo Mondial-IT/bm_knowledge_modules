@@ -27,6 +27,7 @@ class HelpMetadataImportService {
   private const F_TOP_LEVEL = 'field_help_topic_top_level';
   private const F_RELATED = 'field_help_topic_related';
   private const F_STATUS = 'field_help_topic_status';
+  private const F_PATH = 'field_help_topic_path';
 
   public function __construct(
     protected HelpTopicPluginManagerInterface $helpTopicManager,
@@ -47,9 +48,11 @@ class HelpMetadataImportService {
     $imported = 0;
     $updated = 0;
     $not_found = 0;
+    $discovered_ids = [];
 
     foreach ($this->helpTopicManager->getDefinitions() as $id => $definition) {
       $metadata = $this->buildHelpTopicMetadata($id, $definition);
+      $discovered_ids[] = $metadata['id'];
       $status = $this->persistMetadataTerm($metadata);
       $imported++;
       if ($status === 'updated') {
@@ -62,6 +65,7 @@ class HelpMetadataImportService {
 
     foreach ($this->moduleHandler->getModuleList() as $name => $extension) {
       $metadata = $this->buildModuleMetadata($name);
+      $discovered_ids[] = $metadata['id'];
       $status = $this->persistMetadataTerm($metadata);
       $imported++;
       if ($status === 'updated') {
@@ -69,10 +73,13 @@ class HelpMetadataImportService {
       }
     }
 
+    $deleted = $this->cleanupStaleTerms($discovered_ids);
+
     return [
       'imported' => $imported,
       'updated' => $updated,
       'not_found' => $not_found,
+      'deleted' => $deleted,
     ];
   }
 
@@ -92,6 +99,7 @@ class HelpMetadataImportService {
       'top_level' => (bool) ($front_matter['top_level'] ?? FALSE),
       'related' => $front_matter['related'] ?? [],
       'timestamp' => $timestamp,
+      'path' => $path,
     ];
   }
 
@@ -111,6 +119,7 @@ class HelpMetadataImportService {
       'top_level' => FALSE,
       'related' => [],
       'timestamp' => $timestamp,
+      'path' => file_exists($module_file) ? $module_file : null,
     ];
   }
 
@@ -147,6 +156,7 @@ class HelpMetadataImportService {
         'updated' => 'updated',
       ],
     ]);
+    $this->ensureFieldStorage(self::F_PATH, 'string_long');
 
     $this->ensureFieldConfig(self::F_TIMESTAMP, $vocabulary);
     $this->ensureFieldConfig(self::F_TYPE, $vocabulary);
@@ -154,6 +164,7 @@ class HelpMetadataImportService {
     $this->ensureFieldConfig(self::F_TOP_LEVEL, $vocabulary);
     $this->ensureFieldConfig(self::F_RELATED, $vocabulary);
     $this->ensureFieldConfig(self::F_STATUS, $vocabulary);
+    $this->ensureFieldConfig(self::F_PATH, $vocabulary);
   }
 
   /**
@@ -221,6 +232,9 @@ class HelpMetadataImportService {
     $term->set(self::F_TOP_LEVEL, (bool) ($metadata['top_level'] ?? FALSE));
     $term->set(self::F_RELATED, $this->normalizeRelated($metadata['related'] ?? []));
     $term->set(self::F_STATUS, $status);
+    if (!empty($metadata['path'])) {
+      $term->set(self::F_PATH, $metadata['path']);
+    }
 
     if (!empty($metadata['timestamp'])) {
       $term->set(self::F_TIMESTAMP, gmdate('Y-m-d\TH:i:s', (int) $metadata['timestamp']));
@@ -271,6 +285,12 @@ class HelpMetadataImportService {
     if (!$provider) {
       return null;
     }
+    // Skip providers that are not modules (e.g., core).
+    $modules = $this->moduleHandler->getModuleList();
+    if (!isset($modules[$provider])) {
+      return null;
+    }
+
     $base_path = $this->extensionPathResolver->getPath('module', $provider);
     $relative_path = $definition['path'] ?? 'help_topics';
     $candidate_names = [
@@ -303,6 +323,28 @@ class HelpMetadataImportService {
     }
 
     return (string) $related;
+  }
+
+  /**
+   * Removes metadata terms that no longer have a backing file/module.
+   */
+  protected function cleanupStaleTerms(array $discovered_ids): int {
+    $storage = $this->entityTypeManager->getStorage('taxonomy_term');
+    $terms = $storage->loadByProperties(['vid' => self::METADATA_VOCABULARY]);
+    $deleted = 0;
+
+    foreach ($terms as $term) {
+      if (!$term instanceof Term) {
+        continue;
+      }
+      $name = $term->label();
+      if (!in_array($name, $discovered_ids, TRUE)) {
+        $term->delete();
+        $deleted++;
+      }
+    }
+
+    return $deleted;
   }
 
 }

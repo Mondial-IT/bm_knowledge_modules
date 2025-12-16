@@ -175,7 +175,12 @@ class HelpClassificationService {
     $metadata = $this->loadMetadataMap();
 
     foreach ($metadata as $id => $meta) {
-      $map[$id] = array_merge($map[$id] ?? [], $meta);
+      $combined = array_merge($map[$id] ?? [], $meta);
+      if (!empty($meta['terms'])) {
+        $existing = $combined['terms'] ?? [];
+        $combined['terms'] = array_values(array_unique(array_merge($existing, $meta['terms'])));
+      }
+      $map[$id] = $combined;
     }
 
     return $map;
@@ -203,6 +208,8 @@ class HelpClassificationService {
       $map[$id] = [
         'help_topic_type' => $term->get('field_help_topic_type')->value ?? null,
         'help_topic_status' => $term->get('field_help_topic_status')->value ?? null,
+        'help_topic_path' => $term->get('field_help_topic_path')->value ?? null,
+        'terms' => [$term->id()],
       ];
     }
 

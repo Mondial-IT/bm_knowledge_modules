@@ -8,6 +8,8 @@ use Drupal\Core\Extension\Extension;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Routing\RouteProviderInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
 use Drupal\help\HelpTopicPluginManagerInterface;
 use Stringable;
@@ -16,6 +18,7 @@ use Stringable;
  * Collects and normalizes help data from Drupal core systems.
  */
 class HelpAggregationService {
+  use StringTranslationTrait;
 
   public function __construct(
     protected HelpTopicPluginManagerInterface $helpTopicManager,
@@ -23,6 +26,7 @@ class HelpAggregationService {
     protected RouteMatchInterface $routeMatch,
     protected RendererInterface $renderer,
     protected HelpClassificationService $classificationService,
+    protected RouteProviderInterface $routeProvider,
   ) {}
 
   /**
@@ -37,7 +41,7 @@ class HelpAggregationService {
     foreach ($this->helpTopicManager->getDefinitions() as $id => $definition) {
       $items[] = [
         'id' => $id,
-        'title' => (string) ($definition['label'] ?? $id),
+        'title' => $this->ensureTitle($definition, $id),
         'source' => 'help_topic',
         'module' => (string) ($definition['provider'] ?? 'unknown'),
         'description' => $this->renderHelpTopicSummary($id),
@@ -62,7 +66,8 @@ class HelpAggregationService {
     $items = [];
 
     foreach ($this->moduleHandler->getModuleList() as $module => $extension) {
-      $help = $this->moduleHandler->invoke($module, 'help', ['help.page.' . $module, $this->routeMatch]);
+      $route_name = 'help.page.' . $module;
+      $help = $this->moduleHandler->invoke($module, 'help', [$route_name, $this->routeMatch]);
       if ($help === null || $help === []) {
         continue;
       }
@@ -75,6 +80,8 @@ class HelpAggregationService {
         'description' => $this->normalizeDescription($help),
         'tags' => [],
         'help_topic_type' => '.module',
+        'link' => $this->buildHelpLink($route_name, $module),
+        'link_title' => $this->t('@name module help', ['@name' => $this->getModuleLabel($extension, $module)]),
       ];
     }
 
@@ -158,6 +165,42 @@ class HelpAggregationService {
     $info = $extension->info ?? [];
 
     return (string) ($info['name'] ?? $fallback);
+  }
+
+  /**
+   * Ensures a title string is available for a help topic.
+   */
+  protected function ensureTitle(array $definition, string $id): string {
+    $title = (string) ($definition['label'] ?? ($definition['title'] ?? ''));
+    if ($title === '') {
+      return $id;
+    }
+    return $title;
+  }
+
+  /**
+   * Checks if a route exists before generating a link.
+   */
+  protected function routeExists(string $route_name): bool {
+    try {
+      $this->routeProvider->getRouteByName($route_name);
+      return TRUE;
+    }
+    catch (\Exception $e) {
+      return FALSE;
+    }
+  }
+
+  /**
+   * Builds a link to a module help page, with a safe fallback.
+   */
+  protected function buildHelpLink(string $route_name, string $module): ?Url {
+    if ($this->routeExists($route_name)) {
+      return Url::fromRoute($route_name);
+    }
+
+    // Fallback to the known path pattern.
+    return Url::fromUri('base:/admin/help/' . $module);
   }
 
 }

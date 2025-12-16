@@ -7,6 +7,7 @@ services:
       - '@current_route_match'
       - '@renderer'
       - '@bm_help_ai.help_classification'
+      - '@router.route_provider'
 
   bm_help_ai.help_context:
     class: Drupal\bm_help_ai\Service\HelpContextService

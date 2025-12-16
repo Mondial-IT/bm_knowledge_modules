@@ -58,6 +58,7 @@ class HelpAiForm extends FormBase {
     $tree = $this->classificationService->getTermTree();
 
     $form['#cache']['contexts'][] = 'url.query_args:tid';
+    $form['#attached']['library'][] = 'bm_help_ai/ai_admin';
 
     $form['layout'] = [
       '#type' => 'container',
@@ -101,9 +102,26 @@ class HelpAiForm extends FormBase {
       '#type' => 'details',
       '#title' => $this->t('Topics'),
       '#open' => TRUE,
-      'items' => [
-        '#theme' => 'item_list',
-        '#items' => $this->buildHelpList($topics),
+      '#attributes' => ['class' => ['bm-help-ai-table-wrapper']],
+      'table' => [
+        '#type' => 'table',
+        '#attributes' => [
+          'class' => ['bm-help-ai-table', 'bm-help-ai-table-topics'],
+          'data-bm-help-ai-table' => 'topics',
+          'data-has-actions' => 'true',
+        ],
+        '#header' => [
+          $this->t('Title'),
+          $this->t('Description'),
+          $this->t('Source'),
+          $this->t('Module'),
+          $this->t('Type'),
+          $this->t('Status'),
+          $this->t('File'),
+          $this->t('Actions'),
+        ],
+        '#rows' => $this->buildTableRows($topics, TRUE),
+        '#empty' => $this->t('No topics available.'),
       ],
     ];
 
@@ -111,9 +129,26 @@ class HelpAiForm extends FormBase {
       '#type' => 'details',
       '#title' => $this->t('Module overviews'),
       '#open' => TRUE,
-      'items' => [
-        '#theme' => 'item_list',
-        '#items' => $this->buildHelpList($module_overviews),
+      '#attributes' => ['class' => ['bm-help-ai-table-wrapper']],
+      'table' => [
+        '#type' => 'table',
+        '#attributes' => [
+          'class' => ['bm-help-ai-table', 'bm-help-ai-table-overviews'],
+          'data-bm-help-ai-table' => 'module-overviews',
+          'data-has-actions' => 'true',
+        ],
+        '#header' => [
+          $this->t('Title'),
+          $this->t('Description'),
+          $this->t('Source'),
+          $this->t('Module'),
+          $this->t('Type'),
+          $this->t('Status'),
+          $this->t('File'),
+          $this->t('Actions'),
+        ],
+        '#rows' => $this->buildTableRows($module_overviews, TRUE),
+        '#empty' => $this->t('No module overviews available.'),
       ],
     ];
 
@@ -183,14 +218,27 @@ class HelpAiForm extends FormBase {
   /**
    * Builds a renderable title element, with linking when available.
    */
-  protected function buildItemTitle(array $item): array {
+  protected function buildItemTitle(array $item, ?int $term_id = NULL): array {
     $link = $item['link'] ?? null;
+    $term_id = $term_id !== null ? (int) $term_id : null;
     if ($link instanceof Url) {
-      return Link::fromTextAndUrl($item['title'], $link)->toRenderable();
+      return [
+        '#type' => 'link',
+        '#title' => $item['title'] ?? '',
+        '#url' => $link,
+        '#attributes' => $term_id ? [
+          'data-tid' => $term_id,
+          'data-dialog-type' => 'dialog',
+          'data-dialog-renderer' => 'off_canvas',
+          'data-dialog-options' => json_encode(['position' => 'end', 'width' => '40%']),
+          'class' => ['use-ajax'],
+        ] : [],
+      ];
     }
 
     return [
       '#plain_text' => $item['title'] ?? '',
+      '#attributes' => $term_id ? ['data-tid' => $term_id] : [],
     ];
   }
 
@@ -198,6 +246,102 @@ class HelpAiForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state): void {}
+
+  /**
+   * Builds table rows for the topics table.
+   *
+   * @param array<int, array<string, mixed>> $items
+   *   Topics to render.
+   *
+   * @return array<int, array<int, array<string, mixed>>>
+   *   Table rows.
+   */
+  protected function buildTableRows(array $items, bool $with_actions = FALSE): array {
+    $rows = [];
+    foreach ($items as $item) {
+      $term_id = isset($item['terms'][0]) ? (int) $item['terms'][0] : NULL;
+      $row = [
+        'data' => [
+          [
+            'data' => $this->buildItemTitle($item, $term_id),
+          ],
+          [
+            'data' => [
+              '#plain_text' => !empty($item['description']) ? $item['description'] : (string) $this->t('—'),
+            ],
+          ],
+          [
+            'data' => [
+              '#plain_text' => (string) ($item['source'] ?? ''),
+            ],
+          ],
+          [
+            'data' => [
+              '#plain_text' => (string) ($item['module'] ?? ''),
+            ],
+          ],
+          [
+            'data' => [
+              '#plain_text' => (string) ($item['help_topic_type'] ?? ''),
+            ],
+          ],
+          [
+            'data' => [
+              '#plain_text' => (string) ($item['help_topic_status'] ?? ''),
+            ],
+          ],
+          [
+            'data' => [
+              '#plain_text' => (string) ($item['help_topic_path'] ?? ''),
+            ],
+          ],
+        ],
+        'class' => ['bm-help-ai-row'],
+        'attributes' => $this->buildRowAttributes($item),
+      ];
+      if ($with_actions) {
+        $row['data'][] = [
+          'data' => $this->buildEditAction($item),
+        ];
+      }
+      $rows[] = $row;
+    }
+    return $rows;
+  }
+
+  /**
+   * Builds the edit action link for a row.
+   */
+  protected function buildEditAction(array $item): array {
+    $term_id = $item['terms'][0] ?? NULL;
+    if (!$term_id) {
+      return ['#markup' => $this->t('—')];
+    }
+
+    $url = Url::fromRoute('entity.taxonomy_term.edit_form', ['taxonomy_term' => $term_id]);
+    return [
+      '#type' => 'link',
+      '#title' => $this->t('Edit'),
+      '#url' => $url,
+      '#attributes' => [
+        'class' => ['bm-help-ai-edit', 'use-ajax'],
+        'data-dialog-type' => 'dialog',
+        'data-dialog-renderer' => 'off_canvas',
+        'data-dialog-options' => json_encode(['position' => 'end', 'width' => '40%']),
+      ],
+    ];
+  }
+
+  /**
+   * Adds useful attributes to table rows.
+   */
+  protected function buildRowAttributes(array $item): array {
+    $attributes = [];
+    if (!empty($item['terms'][0])) {
+      $attributes['data-term-id'] = $item['terms'][0];
+    }
+    return $attributes;
+  }
 
   /**
    * Builds nested term list render array.

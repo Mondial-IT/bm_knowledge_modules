@@ -1,0 +1,12 @@
+ai_admin:
+  css:
+    theme:
+      css/ai-admin.css: {}
+  dependencies:
+    - core/drupal
+    - core/jquery
+    - core/drupal.ajax
+    - core/drupal.dialog.ajax
+    - core/drupal.dialog.off_canvas
+  js:
+    js/ai-admin.js: {}

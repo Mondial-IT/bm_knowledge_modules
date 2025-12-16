@@ -1,0 +1,17 @@
+.bm-help-ai-table-wrapper {
+  overflow-x: auto;
+}
+
+.bm-help-ai-table th,
+.bm-help-ai-table td {
+  vertical-align: top;
+}
+
+.bm-help-ai-table .meta {
+  font-size: 0.85em;
+  color: #666;
+}
+
+.bm-help-ai-actions {
+  text-align: right;
+}
