@@ -22,4 +22,4 @@ bash "${SCRIPT}" \
   "$@"
 
 cd wiki
-update_and_push_to_github.sh
+bash update_and_push_to_github.sh
