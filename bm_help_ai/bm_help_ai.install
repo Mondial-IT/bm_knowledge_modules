@@ -1,0 +1,95 @@
+<?php
+
+declare(strict_types=1);
+
+use Drupal\field\Entity\FieldConfig;
+use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\taxonomy\Entity\Vocabulary;
+use Drupal\taxonomy\VocabularyInterface;
+
+/**
+ * Creates vocabularies needed for bm_help_ai.
+ */
+function bm_help_ai_install(): void {
+  bm_help_ai_create_vocabularies();
+  bm_help_ai_ensure_metadata_fields();
+}
+
+/**
+ * Ensures vocabularies exist.
+ */
+function bm_help_ai_create_vocabularies(): void {
+  $vocabularies = [
+    'bm_help_ai_help_topics' => 'BM Help AI help topics',
+    'help_topics_metadata' => 'Help topics metadata',
+  ];
+
+  foreach ($vocabularies as $vid => $name) {
+    if (!Vocabulary::load($vid)) {
+      Vocabulary::create([
+        'vid' => $vid,
+        'name' => $name,
+      ])->save();
+    }
+  }
+}
+
+/**
+ * Ensures metadata field storages/config exist on help_topics_metadata.
+ */
+function bm_help_ai_ensure_metadata_fields(): void {
+  $vocabulary = Vocabulary::load('help_topics_metadata');
+  if (!$vocabulary instanceof VocabularyInterface) {
+    return;
+  }
+
+  $fields = [
+    'field_help_topic_timestamp' => ['type' => 'datetime', 'settings' => ['datetime_type' => 'datetime']],
+    'field_help_topic_type' => ['type' => 'list_string', 'settings' => [
+      'allowed_values' => [
+        'help_topic' => 'help_topic',
+        '.module' => '.module',
+        'wiki' => 'wiki',
+      ],
+    ]],
+    'field_help_topic_label' => ['type' => 'string'],
+    'field_help_topic_top_level' => ['type' => 'boolean'],
+    'field_help_topic_related' => ['type' => 'string_long'],
+    'field_help_topic_status' => ['type' => 'list_string', 'settings' => [
+      'allowed_values' => [
+        'current' => 'current',
+        'not_found' => 'not_found',
+        'updated' => 'updated',
+      ],
+    ]],
+  ];
+
+  foreach ($fields as $field_name => $definition) {
+    if (!FieldStorageConfig::loadByName('taxonomy_term', $field_name)) {
+      FieldStorageConfig::create([
+        'field_name' => $field_name,
+        'entity_type' => 'taxonomy_term',
+        'type' => $definition['type'],
+        'settings' => $definition['settings'] ?? [],
+        'cardinality' => 1,
+      ])->save();
+    }
+
+    if (!FieldConfig::loadByName('taxonomy_term', $vocabulary->id(), $field_name)) {
+      FieldConfig::create([
+        'field_name' => $field_name,
+        'entity_type' => 'taxonomy_term',
+        'bundle' => $vocabulary->id(),
+        'label' => $field_name,
+      ])->save();
+    }
+  }
+}
+
+/**
+ * Update hook to create vocabularies and fields when deploying.
+ */
+function bm_help_ai_update_9001(): void {
+  bm_help_ai_create_vocabularies();
+  bm_help_ai_ensure_metadata_fields();
+}

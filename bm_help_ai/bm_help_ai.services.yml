@@ -1,0 +1,43 @@
+services:
+  bm_help_ai.help_aggregation:
+    class: Drupal\bm_help_ai\Service\HelpAggregationService
+    arguments:
+      - '@bm_knowledge_ai.adapter_manager'
+
+  bm_help_ai.help_context:
+    class: Drupal\bm_help_ai\Service\HelpContextService
+    arguments:
+      - '@current_route_match'
+      - '@current_user'
+      - '@module_handler'
+      - '@user.permissions'
+      - '@request_stack'
+
+  bm_help_ai.help_ai_relevance:
+    class: Drupal\bm_help_ai\Service\HelpAiRelevanceService
+
+  bm_help_ai.help_classification:
+    class: Drupal\bm_help_ai\Service\HelpClassificationService
+    arguments:
+      - '@entity_type.manager'
+      - '@config.factory'
+
+  bm_help_ai.help_metadata_import:
+    class: Drupal\bm_help_ai\Service\HelpMetadataImportService
+    arguments:
+      - '@plugin.manager.help_topic'
+      - '@module_handler'
+      - '@extension.path.resolver'
+      - '@entity_type.manager'
+
+  bm_help_ai.help_adapter:
+    class: Drupal\bm_help_ai\Adapter\HelpKnowledgeAdapter
+    arguments:
+      - '@plugin.manager.help_topic'
+      - '@module_handler'
+      - '@current_route_match'
+      - '@renderer'
+      - '@router.route_provider'
+      - '@language_manager'
+    tags:
+      - { name: bm_knowledge_ai.adapter }

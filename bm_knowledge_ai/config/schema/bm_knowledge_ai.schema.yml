@@ -1,0 +1,28 @@
+bm_knowledge_ai.node_adapter:
+  type: config_object
+  label: 'BM Knowledge AI node adapter settings'
+  mapping:
+    enabled:
+      type: boolean
+      label: 'Enable node adapter'
+    bundles:
+      type: sequence
+      label: 'Allowed bundles'
+      sequence:
+        type: string
+    fields:
+      type: mapping
+      label: 'Field mapping'
+      mapping:
+        title:
+          type: string
+          label: 'Title field'
+        body:
+          type: string
+          label: 'Body field'
+    language_behavior:
+      type: string
+      label: 'Language behavior (per_translation or default)'
+    authority_level:
+      type: string
+      label: 'Authority level'

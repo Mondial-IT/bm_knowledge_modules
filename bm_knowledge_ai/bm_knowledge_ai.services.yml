@@ -1,0 +1,39 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: false
+    public: false
+
+  bm_knowledge_ai.adapter_manager:
+    class: Drupal\bm_knowledge_ai\Service\KnowledgeAdapterManager
+    arguments:
+      - !tagged_iterator bm_knowledge_ai.adapter
+      - '@bm_knowledge_ai.classification'
+
+  bm_knowledge_ai.classification:
+    class: Drupal\bm_knowledge_ai\Service\KnowledgeClassificationService
+    arguments:
+      - '@entity_type.manager'
+      - '@config.factory'
+
+  bm_knowledge_ai.context:
+    class: Drupal\bm_knowledge_ai\Service\KnowledgeContextService
+    arguments:
+      - '@current_route_match'
+      - '@current_user'
+      - '@module_handler'
+      - '@user.permissions'
+      - '@request_stack'
+
+  bm_knowledge_ai.relevance:
+    class: Drupal\bm_knowledge_ai\Service\KnowledgeAiRelevanceService
+
+  bm_knowledge_ai.node_adapter:
+    class: Drupal\bm_knowledge_ai\Adapter\NodeKnowledgeAdapter
+    arguments:
+      - '@entity_type.manager'
+      - '@config.factory'
+      - '@language_manager'
+      - '@current_user'
+    tags:
+      - { name: bm_knowledge_ai.adapter }

@@ -1,0 +1,18 @@
+---
+label: 'BM Help AI overview'
+top_level: true
+related:
+  - bm_help_ai.design_document
+---
+<h2>{% trans %}What this module provides{% endtrans %}</h2>
+<p>{% trans %}BM Help AI adds an aggregated help page at <code>/help/ai</code> that brings together help topics, legacy <code>hook_help()</code> overviews, and contextual signals. AI is optional and currently represented as a placeholder section.{% endtrans %}</p>
+
+<h3>{% trans %}Key behaviors{% endtrans %}</h3>
+<ul>
+  <li>{% trans %}Lists all help topics without altering their content or hierarchy.{% endtrans %}</li>
+  <li>{% trans %}Surfaces module overviews from <code>hook_help()</code> and explicitly flagged topics.{% endtrans %}</li>
+  <li>{% trans %}Builds a situation-aware list using route, roles, and enabled modules as inputs for future relevance scoring.{% endtrans %}</li>
+  <li>{% trans %}Separates AI output as non-authoritative, keeping canonical help as the source of truth.{% endtrans %}</li>
+</ul>
+
+<p>{% trans %}See the design document topic for architectural goals and extension points.{% endtrans %}</p>

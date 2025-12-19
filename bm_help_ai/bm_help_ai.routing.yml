@@ -1,0 +1,36 @@
+bm_help_ai.help_ai:
+  path: '/help/ai'
+  defaults:
+    _form: '\Drupal\bm_help_ai\Form\HelpAiForm'
+    _title: 'Help AI'
+  requirements:
+    _permission: 'access administration pages'
+
+bm_help_ai.settings:
+  path: '/admin/config/system/bm-help-ai'
+  defaults:
+    _form: '\Drupal\bm_help_ai\Form\HelpAiSettingsForm'
+    _title: 'BM Help AI settings'
+  requirements:
+    _permission: 'administer site configuration'
+
+bm_help_ai.taxonomy_help_ai:
+  path: '/admin/structure/taxonomy/help-ai'
+  defaults:
+    _controller: '\Drupal\bm_help_ai\Controller\HelpAiTaxonomyController::overview'
+    _title: 'Help AI taxonomies'
+  requirements:
+    _permission: 'administer taxonomy'
+
+bm_help_ai.taxonomy_term_display:
+  path: '/help/ai/taxonomy/{taxonomy_term}'
+  defaults:
+    _controller: '\Drupal\bm_help_ai\Controller\HelpAiTaxonomyController::view'
+    _title_callback: '\Drupal\taxonomy\Controller\TaxonomyController::termTitle'
+  requirements:
+    _entity_access: 'taxonomy_term.view'
+    _permission: 'access administration pages'
+  options:
+    parameters:
+      taxonomy_term:
+        type: entity:taxonomy_term

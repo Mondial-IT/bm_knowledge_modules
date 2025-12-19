@@ -1,0 +1,24 @@
+---
+label: 'BM Knowledge AI overview'
+top_level: true
+---
+<h2>{% trans %}What this module provides{% endtrans %}</h2>
+<p>{% trans %}BM Knowledge AI is a headless knowledge layer that normalizes disparate sources into KnowledgeItems, aggregates them via adapters, and attaches taxonomy/context metadata for AI-safe consumption.{% endtrans %}</p>
+
+<h3>{% trans %}Core capabilities{% endtrans %}</h3>
+<ul>
+  <li>{% trans %}Canonical KnowledgeItem model with taxonomy, context hints, and authority level.{% endtrans %}</li>
+  <li>{% trans %}Adapter contract so sources like help topics, nodes, or documents can be added without changing consumers.{% endtrans %}</li>
+  <li>{% trans %}Classification service that reuses existing vocabularies for term attachment and filtering.{% endtrans %}</li>
+  <li>{% trans %}Context and relevance services prepared for future AI ranking while remaining deterministic today.{% endtrans %}</li>
+</ul>
+
+<h3>{% trans %}Current consumer{% endtrans %}</h3>
+<p>{% trans %}The bm_help_ai module registers a HelpKnowledgeAdapter to expose help topics and legacy hook_help entries through this layer, keeping its UI unchanged while sharing infrastructure.{% endtrans %}</p>
+
+<h3>{% trans %}Extending with new adapters{% endtrans %}</h3>
+<ol>
+  <li>{% trans %}Create a service implementing KnowledgeAdapterInterface and tag it with <code>bm_knowledge_ai.adapter</code>.{% endtrans %}</li>
+  <li>{% trans %}Return KnowledgeItems from <code>normalize()</code> with stable IDs and source types (e.g., <code>node</code>, <code>document</code>).{% endtrans %}</li>
+  <li>{% trans %}Optionally map taxonomy terms via configuration to enable filtering and explainability.{% endtrans %}</li>
+</ol>

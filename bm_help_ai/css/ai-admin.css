@@ -1,0 +1,45 @@
+.bm-help-ai-table-wrapper {
+  overflow-x: auto;
+
+
+  .bm-help-ai-table {
+    font-size: smaller;
+
+    .meta {
+      font-size: 0.85em;
+      color: #666;
+    }
+
+    th {
+      vertical-align: top;
+    }
+
+    td {
+      vertical-align: top;
+
+
+      /* Actions column uses core "operations"/dropbutton styling. */
+
+      .dropbutton-wrapper {
+        display: inline-block;
+      }
+
+      /* Make the dropbutton feel like a compact select control in tables. */
+
+      .dropbutton-widget {
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        border-radius: 6px;
+        background: white;
+        line-height: 1em;
+      }
+
+      .dropbutton-widget .dropbutton-action a {
+        padding: 0.35rem 0.6rem;
+      }
+
+      .dropbutton-widget .dropbutton-toggle button {
+        border-left: 1px solid rgba(0, 0, 0, 0.12);
+      }
+    }
+  }
+}

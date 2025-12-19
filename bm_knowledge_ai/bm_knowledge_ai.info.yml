@@ -1,0 +1,7 @@
+name: 'BM Knowledge AI'
+type: module
+description: 'Provides generic knowledge aggregation, taxonomy attachment, and AI context services.'
+core_version_requirement: ^11
+package: Custom
+dependencies:
+  - drupal:taxonomy

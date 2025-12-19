@@ -1,0 +1,43 @@
+bm_help_ai.help_ai:
+  title: 'AI Help'
+  description: 'Aggregated help topics with placeholder AI assistance.'
+  route_name: bm_help_ai.help_ai
+  parent: help.main
+
+bm_help_ai.settings:
+  title: 'BM Help AI settings'
+  description: 'Manage BM Help AI and refresh metadata.'
+  route_name: bm_help_ai.settings
+  parent: bm_main.bluemarloc_enhancements
+  weight: 10
+  options:
+    _admin_route: TRUE
+
+bm_help_ai.taxonomy_help_ai:
+  title: 'Help AI'
+  description: 'Help AI taxonomies'
+  route_name: bm_help_ai.taxonomy_help_ai
+  parent: entity.taxonomy_vocabulary.collection
+  weight: 20
+  options:
+    _admin_route: TRUE
+
+bm_help_ai.taxonomy_help_topics:
+  title: 'Help topics hierarchy'
+  route_name: entity.taxonomy_vocabulary.overview_form
+  route_parameters:
+    taxonomy_vocabulary: 'bm_help_ai_help_topics'
+  parent: bm_help_ai.taxonomy_help_ai
+  weight: 1
+  options:
+    _admin_route: TRUE
+
+bm_help_ai.taxonomy_help_topics_metadata:
+  title: 'Help topics metadata'
+  route_name: entity.taxonomy_vocabulary.overview_form
+  route_parameters:
+    taxonomy_vocabulary: 'help_topics_metadata'
+  parent: bm_help_ai.taxonomy_help_ai
+  weight: 2
+  options:
+    _admin_route: TRUE

@@ -1,0 +1,15 @@
+ai_admin:
+  css:
+    theme:
+      css/ai-admin.css: {}
+  dependencies:
+    - bm_main/datatablesjs
+    - core/drupal
+    - core/jquery
+    - core/drupal.debounce
+    - core/drupal.ajax
+    - core/drupal.dialog.ajax
+    - core/drupal.dialog.off_canvas
+    - core/drupal.dropbutton
+  js:
+    js/ai-admin.js: {}
