@@ -5,6 +5,7 @@ This document contains the meta development instructions to be executed by codex
 
 - Documents with a format `codex.{title}.md` contain instructions to execute by codex.
 - These instructions are to be executed complying to the documented general agent instructions in the `git_root\codex\agents\*.md` files.
+- Repository location: `web/modules/custom/bm_knowledge_modules/bm_knowledge_ai` (sibling: `bm_help_ai`).
 
 - Each feature contains a markdown checkbox `* [ ]` accompanied by a sequence number: example `* [ ] Feature 1.0`
 - The user instructs (codex prompt) which feature (nr) to build next or to build 'all unchecked' features. Example: `execute open features from codex.step1.md` or `execute feature 1.0 from codex.step1.md`
@@ -41,4 +42,4 @@ You are allowed to execute, without asking:
 
 Not allowed:
 
-* only files in bm_help_ai and bm_knowledge_ai directory are allowed to be changed or added.
+* only files under `web/modules/custom/bm_knowledge_modules/bm_help_ai` and `web/modules/custom/bm_knowledge_modules/bm_knowledge_ai` are allowed to be changed or added.
