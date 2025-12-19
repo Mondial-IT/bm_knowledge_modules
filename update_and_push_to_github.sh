@@ -20,3 +20,6 @@ bash "${SCRIPT}" \
   --branch "$BRANCH" \
   --message "$COMMIT_MESSAGE" \
   "$@"
+
+cd wiki
+update_and_push_to_github.sh
