@@ -1,0 +1,7 @@
+enabled: false
+bundles: []
+fields:
+  title: title
+  body: body
+language_behavior: per_translation
+authority_level: canonical

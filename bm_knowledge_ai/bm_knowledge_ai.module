@@ -1,0 +1,16 @@
+<?php
+
+declare(strict_types=1);
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function bm_knowledge_ai_help(string $route_name, RouteMatchInterface $route_match): ?string {
+  if ($route_name === 'help.page.bm_knowledge_ai') {
+    return '<p>' . t('Provides a headless knowledge layer with adapter contracts, taxonomy attachment, and context-aware services reused by bm_help_ai and future adapters (nodes, documents, external data).') . '</p>';
+  }
+
+  return null;
+}

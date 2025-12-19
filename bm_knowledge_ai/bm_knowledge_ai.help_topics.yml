@@ -1,0 +1,7 @@
+bm_knowledge_ai.overview:
+  class: 'Drupal\help\HelpTopicTwig'
+  title: 'BM Knowledge AI: Overview'
+  label: 'BM Knowledge AI overview'
+  category: 'Administration'
+  weight: 0
+  top_level: true
