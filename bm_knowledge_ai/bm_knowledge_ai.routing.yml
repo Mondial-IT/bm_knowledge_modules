@@ -1,0 +1,19 @@
+bm_knowledge_ai.settings:
+  path: '/admin/config/system/bm-knowledge-ai'
+  defaults:
+    _form: '\Drupal\bm_knowledge_ai\Form\KnowledgeNodeAdapterSettingsForm'
+    _title: 'Knowledge AI settings'
+  requirements:
+    _permission: 'administer site configuration'
+  options:
+    _admin_route: TRUE
+
+bm_knowledge_ai.demo:
+  path: '/admin/config/system/bm-knowledge-ai/demo'
+  defaults:
+    _controller: '\Drupal\bm_knowledge_ai\Controller\KnowledgeDemoController::demo'
+    _title: 'Knowledge AI demo'
+  requirements:
+    _permission: 'administer site configuration'
+  options:
+    _admin_route: TRUE

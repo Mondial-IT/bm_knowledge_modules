@@ -2,6 +2,13 @@ Below is **`codex.step5.md`**, written as a **validation step** for the new `bm_
 
 This step is deliberately constrained: no UI, no editing, no AI prompts. Its sole purpose is to **prove that help, content, and future data sources are truly interchangeable knowledge sources**.
 
+Related
+* bm_knowledge_ai/codex.design_document_1.md
+* bm_knowledge_ai/codex.design_document_2.md
+* bm_knowledge_ai/codex.features_1.md
+* bm_knowledge_ai/codex.md
+
+
 Status: **implemented**. NodeKnowledgeAdapter now exists (disabled by default via config), with bundle/field configuration, per-translation discovery, and KnowledgeItem normalization; no UI was added, and bm_help_ai remains unchanged.
 
 ---

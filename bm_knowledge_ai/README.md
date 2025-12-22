@@ -12,6 +12,10 @@ Headless knowledge layer that normalizes content into `KnowledgeItem` objects, c
 - `bm_help_ai` registers `HelpKnowledgeAdapter` (help topics + `hook_help()`), demonstrating the pattern.
 - `NodeKnowledgeAdapter` (in this module) ingests configured published node bundles (disabled by default; see config below).
 
+## Demo page
+- Admin demo at `/admin/config/system/bm-knowledge-ai/demo` lists counts and a sample of KnowledgeItems (first 25) from all adapters to show what AI consumers can access.
+- Use the configure link on the page to adjust adapter settings.
+
 ## Key services
 - `bm_knowledge_ai.adapter_manager` — gathers items from tagged adapters.
 - `bm_knowledge_ai.classification` — attaches taxonomy metadata (reuses existing Help vocabularies).

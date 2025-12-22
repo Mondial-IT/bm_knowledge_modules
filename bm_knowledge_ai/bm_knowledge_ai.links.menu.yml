@@ -1,0 +1,13 @@
+bm_knowledge_ai.settings:
+  title: 'Knowledge AI settings'
+  description: 'Configure knowledge adapters (nodes, help via bm_help_ai).'
+  route_name: bm_knowledge_ai.settings
+  parent: bm_main.bluemarloc_enhancements_knowledge
+  weight: 0
+
+bm_knowledge_ai.demo:
+  title: 'Knowledge AI demo'
+  description: 'View sample knowledge items available to AI consumers.'
+  route_name: bm_knowledge_ai.demo
+  parent: bm_main.bluemarloc_enhancements_knowledge
+  weight: 1

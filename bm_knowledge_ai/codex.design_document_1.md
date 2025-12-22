@@ -4,9 +4,10 @@ This step does **not** refactor UI first. It introduces **module boundaries, abs
 
 All analysis and decisions below are grounded in the verified implementation and intent described in:
 
-* codex.step1.md
-* codex.step2.md
-* codex.step3.md
+* bm_knowledge_ai/codex.design_document_1.md
+* bm_knowledge_ai/codex.design_document_2.md
+* bm_knowledge_ai/codex.features_1.md
+* bm_knowledge_ai/codex.md
 
 You are allowed to execute:
 

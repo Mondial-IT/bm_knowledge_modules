@@ -9,12 +9,14 @@ services:
     arguments:
       - !tagged_iterator bm_knowledge_ai.adapter
       - '@bm_knowledge_ai.classification'
+    public: true
 
   bm_knowledge_ai.classification:
     class: Drupal\bm_knowledge_ai\Service\KnowledgeClassificationService
     arguments:
       - '@entity_type.manager'
       - '@config.factory'
+    public: true
 
   bm_knowledge_ai.context:
     class: Drupal\bm_knowledge_ai\Service\KnowledgeContextService
@@ -37,3 +39,11 @@ services:
       - '@current_user'
     tags:
       - { name: bm_knowledge_ai.adapter }
+
+  bm_knowledge_ai.form.node_adapter_settings:
+    class: Drupal\bm_knowledge_ai\Form\KnowledgeNodeAdapterSettingsForm
+    arguments:
+      - '@module_handler'
+      - '@entity_type.manager'
+    tags:
+      - { name: controller.service_arguments }

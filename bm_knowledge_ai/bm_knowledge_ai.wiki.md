@@ -14,6 +14,10 @@ BM Knowledge AI is a headless Drupal 11 module that standardizes how knowledge i
 - `bm_help_ai` registers a `HelpKnowledgeAdapter` (help topics + `hook_help()`); its UI consumes KnowledgeItems filtered by `source_type = help`.
 - `NodeKnowledgeAdapter` (in this module) ingests configured published node bundles (disabled by default until configured).
 
+## Demo page
+- Admin demo at `/admin/config/system/bm-knowledge-ai/demo` shows counts and a sample of KnowledgeItems (first 25) across adapters to illustrate what AI consumers can access.
+- A configure link on the page leads to the adapter settings form.
+
 ## How to add a new adapter
 1) Implement `KnowledgeAdapterInterface` in your module.  
 2) Tag the service with `bm_knowledge_ai.adapter`.  

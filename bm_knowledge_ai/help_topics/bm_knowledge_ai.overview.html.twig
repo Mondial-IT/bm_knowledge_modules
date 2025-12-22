@@ -16,6 +16,13 @@ top_level: true
 <h3>{% trans %}Current consumer{% endtrans %}</h3>
 <p>{% trans %}The bm_help_ai module registers a HelpKnowledgeAdapter to expose help topics and legacy hook_help entries through this layer, keeping its UI unchanged while sharing infrastructure.{% endtrans %}</p>
 
+<h3>{% trans %}Admin access{% endtrans %}</h3>
+<ul>
+  <li>{% trans %}Settings: <code>/admin/config/system/bm-knowledge-ai</code> (adapter configuration).{% endtrans %}</li>
+  <li>{% trans %}Demo: <code>/admin/config/system/bm-knowledge-ai/demo</code> (counts and sample KnowledgeItems).{% endtrans %}</li>
+  <li>{% trans %}Menu path: Blue Marloc Enhancements → Knowledge in the admin menu (if bm_main is enabled).{% endtrans %}</li>
+</ul>
+
 <h3>{% trans %}Extending with new adapters{% endtrans %}</h3>
 <ol>
   <li>{% trans %}Create a service implementing KnowledgeAdapterInterface and tag it with <code>bm_knowledge_ai.adapter</code>.{% endtrans %}</li>

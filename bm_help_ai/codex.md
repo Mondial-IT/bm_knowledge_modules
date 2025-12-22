@@ -7,6 +7,7 @@ This document contains the meta development instructions to be executed by codex
 - These instructions are to be executed complying to the documented general agent instructions in the `git_root\codex\agents\*.md` files.
 - `bm_help_ai` now depends on the headless knowledge layer in `bm_knowledge_ai`; keep all new work aligned with that shared architecture (adapters + classification + context).
 - Repository location: `web/modules/custom/bm_knowledge_modules/bm_help_ai` (sibling: `bm_knowledge_ai`).
+- On every feature change: update the relevant help topics, README, and wiki pages to keep admin-facing documentation in sync.
 
 - Each feature contains a markdown checkbox `* [ ]` accompanied by a sequence number: example `* [ ] Feature 1.0`
 - The user instructs (codex prompt) which feature (nr) to build next or to build 'all unchecked' features. Example: `execute open features from codex.step1.md` or `execute feature 1.0 from codex.step1.md`
