@@ -2,12 +2,29 @@ bm_help_ai.help_ai:
   title: 'Drupal Help System'
   description: 'Aggregated help UI (topics, module overviews, situational help)'
   route_name: bm_help_ai.help_ai
-  parent: bm_main.bluemarloc_enhancements_knowledge
+  parent: bm_main.bluemarloc_enhancements
   weight: 2
 
 bm_help_ai.settings:
   title: 'Help AI settings'
   description: 'Import help metadata and manage taxonomy mappings'
   route_name: bm_help_ai.settings
-  parent: bm_main.bluemarloc_enhancements_knowledge
+  parent: bm_main.bluemarloc_enhancements
   weight: 3
+
+  # Vocabularies installed via install
+bm_help_ai.help_topics_vocab:
+  title: 'BM Help AI help topics'
+  route_name: entity.taxonomy_vocabulary.overview_form
+  route_parameters:
+    taxonomy_vocabulary: 'bm_help_ai_help_topics'
+  parent: entity.taxonomy_vocabulary.collection
+  weight: 0
+
+bm_help_ai.help_topics_metadata_vocab:
+  title: 'Help topics metadata'
+  route_name: entity.taxonomy_vocabulary.overview_form
+  route_parameters:
+    taxonomy_vocabulary: 'help_topics_metadata'
+  parent: entity.taxonomy_vocabulary.collection
+  weight: 1

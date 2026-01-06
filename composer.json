@@ -1,0 +1,25 @@
+{
+    "name": "mondial-it/bm_knowledge_modules",
+    "description": "modules: bm_help_ai and bm_knowledge_ai, which expose help information and knowledge data to AI",
+    "type": "drupal-custom-module",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Blue Marloc",
+            "email": "info@bluemarloc.com"
+        }
+    ],
+    "require": {
+        "drupal/core": "^10.2 || ^11"
+    },
+    "autoload": {
+        "psr-4": {
+            "Drupal\\bm_knowledge_modules\\": "src/"
+        }
+    },
+    "extra": {
+        "drupal": {
+            "package": "Blue Marloc"
+        }
+    }
+}
